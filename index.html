@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TurboWarp 扩展画廊</title>
+  <meta name="description" content="一个基于 GitHub Pages 的 TurboWarp 扩展画廊。" />
+
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --border: #e5e7eb;
+      --tag-bg: #eef2ff;
+      --tag-text: #4338ca;
+      --danger: #dc2626;
+      --shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Microsoft YaHei",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 48px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 12px;
+      font-size: 2.4rem;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      outline: none;
+      background: white;
+    }
+
+    .search-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .stats {
+      color: var(--muted);
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .tags-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 28px;
+    }
+
+    .tag-btn {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .tag-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .tag-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 280px;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #eef2ff;
+      border: 1px solid var(--border);
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.3;
+    }
+
+    .card-id {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .description {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 8px 0 14px;
+      flex: 1;
+    }
+
+    .authors {
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .authors a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .authors a:hover {
+      text-decoration: underline;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+      color: white;
+    }
+
+    .empty,
+    .error,
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      background: white;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding: 36px 16px;
+      }
+
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        white-space: normal;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>TurboWarp 扩展画廊</h1>
+    <p>收集、搜索并快速加载自定义 TurboWarp 扩展</p>
+  </header>
+
+  <main>
+    <section class="toolbar">
+      <input
+        id="searchInput"
+        class="search-box"
+        type="search"
+        placeholder="搜索扩展名称、描述、作者或标签..."
+      />
+      <div id="stats" class="stats">正在加载...</div>
+    </section>
+
+    <section id="tagsPanel" class="tags-panel"></section>
+
+    <section id="content">
+      <div class="loading">正在加载扩展列表...</div>
+    </section>
+  </main>
+
+  <footer>
+    Powered by GitHub Pages ·
+    <a href="https://turbowarp.org/" target="_blank" rel="noopener noreferrer">TurboWarp</a>
+  </footer>
+
+  <script>
+    const EXTENSIONS_JSON = "extensions.json";
+
+    let extensions = [];
+    let selectedTag = "all";
+    let searchKeyword = "";
+
+    const content = document.getElementById("content");
+    const searchInput = document.getElementById("searchInput");
+    const tagsPanel = document.getElementById("tagsPanel");
+    const stats = document.getElementById("stats");
+
+    async function loadExtensions() {
+      try {
+        const response = await fetch(EXTENSIONS_JSON, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        extensions = await response.json();
+
+        if (!Array.isArray(extensions)) {
+          throw new Error("extensions.json 必须是数组格式");
+        }
+
+        renderTags();
+        renderExtensions();
+      } catch (error) {
+        console.error(error);
+        content.innerHTML = `
+          <div class="error">
+            加载 extensions.json 失败。请检查 JSON 格式或 GitHub Pages 路径。
+          </div>
+        `;
+        stats.textContent = "加载失败";
+      }
+    }
+
+    function getAllTags() {
+      const set = new Set();
+
+      extensions.forEach(ext => {
+        if (Array.isArray(ext.tags)) {
+          ext.tags.forEach(tag => set.add(tag));
+        }
+      });
+
+      return Array.from(set).sort();
+    }
+
+    function renderTags() {
+      const tags = getAllTags();
+
+      tagsPanel.innerHTML = "";
+
+      const allButton = createTagButton("全部", "all");
+      tagsPanel.appendChild(allButton);
+
+      tags.forEach(tag => {
+        tagsPanel.appendChild(createTagButton(tag, tag));
+      });
+    }
+
+    function createTagButton(label, value) {
+      const button = document.createElement("button");
+      button.className = "tag-btn" + (selectedTag === value ? " active" : "");
+      button.textContent = label;
+
+      button.addEventListener("click", () => {
+        selectedTag = value;
+        renderTags();
+        renderExtensions();
+      });
+
+      return button;
+    }
+
+    function normalize(value) {
+      return String(value || "").toLowerCase();
+    }
+
+    function getAuthorsText(ext) {
+      if (!Array.isArray(ext.authors)) return "";
+
+      return ext.authors
+        .map(author => author.name || "")
+        .join(" ");
+    }
+
+    function filterExtensions() {
+      const keyword = normalize(searchKeyword).trim();
+
+      return extensions.filter(ext => {
+        const tags = Array.isArray(ext.tags) ? ext.tags : [];
+
+        const matchTag =
+          selectedTag === "all" || tags.includes(selectedTag);
+
+        const searchableText = [
+          ext.id,
+          ext.name,
+          ext.description,
+          tags.join(" "),
+          getAuthorsText(ext)
+        ].join(" ");
+
+        const matchKeyword =
+          !keyword || normalize(searchableText).includes(keyword);
+
+        return matchTag && matchKeyword;
+      });
+    }
+
+    function renderExtensions() {
+      const list = filterExtensions();
+
+      stats.textContent = `共 ${extensions.length} 个扩展，当前显示 ${list.length} 个`;
+
+      if (list.length === 0) {
+        content.innerHTML = `<div class="empty">没有找到符合条件的扩展。</div>`;
+        return;
+      }
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      list.forEach(ext => {
+        grid.appendChild(createCard(ext));
+      });
+
+      content.innerHTML = "";
+      content.appendChild(grid);
+    }
+
+    function createCard(ext) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const icon = ext.icon || "";
+      const name = ext.name || "未命名扩展";
+      const id = ext.id || "";
+      const description = ext.description || "暂无描述";
+      const tags = Array.isArray(ext.tags) ? ext.tags : [];
+      const authors = Array.isArray(ext.authors) ? ext.authors : [];
+
+      card.innerHTML = `
+        <div class="card-top">
+          <img class="icon" src="${escapeHtml(icon)}" alt="${escapeHtml(name)} 图标" onerror="this.style.display='none'" />
+          <div>
+            <h2 class="card-title">${escapeHtml(name)}</h2>
+            <div class="card-id">${escapeHtml(id)}</div>
+          </div>
+        </div>
+
+        <div class="description">${escapeHtml(description)}</div>
+
+        <div class="authors">
+          作者：
+          ${
+            authors.length
+              ? authors.map(author => {
+                  const authorName = escapeHtml(author.name || "Unknown");
+                  const authorUrl = escapeAttribute(author.url || "#");
+                  return `<a href="${authorUrl}" target="_blank" rel="noopener noreferrer">${authorName}</a>`;
+                }).join("、")
+              : "未知"
+          }
+        </div>
+
+        <div class="tag-list">
+          ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
+        </div>
+
+        <div class="actions">
+          ${ext.turboWarpUrl ? `<a class="btn primary" href="${escapeAttribute(ext.turboWarpUrl)}" target="_blank" rel="noopener noreferrer">在 TurboWarp 中打开</a>` : ""}
+          ${ext.downloadUrl ? `<a class="btn" href="${escapeAttribute(ext.downloadUrl)}" target="_blank" rel="noopener noreferrer">下载</a>` : ""}
+          ${ext.docsUrl ? `<a class="btn" href="${escapeAttribute(ext.docsUrl)}" target="_blank" rel="noopener noreferrer">文档</a>` : ""}
+        </div>
+      `;
+
+      return card;
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(str) {
+      return escapeHtml(str);
+    }
+
+    searchInput.addEventListener("input", event => {
+      searchKeyword = event.target.value;
+      renderExtensions();
+    });
+
+    loadExtensions();
+  </script>
+</body>
+</html>
