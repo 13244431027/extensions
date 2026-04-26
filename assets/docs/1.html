@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚拟键盘扩展 - 文档</title>
+    <style>
+        :root {
+            --bg: #1a1d24;
+            --card-bg: #21252e;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #4d78cc;
+            --accent-light: #6b8ff0;
+            --accent-glow: rgba(77, 120, 204, 0.3);
+            --tag-bg: rgba(77, 120, 204, 0.12);
+            --tag-text: #7da8f0;
+            --code-bg: #16181d;
+            --warning-bg: rgba(255, 166, 87, 0.08);
+            --warning-border: rgba(255, 166, 87, 0.25);
+            --warning-text: #e3b37c;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-xs: 6px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 40px 20px 80px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            padding: 48px 0 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+        .header .icon {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #3e4451, #2c313a);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            line-height: 64px;
+            font-size: 28px;
+            color: #e5ebf5;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #e5ebf5;
+        }
+        .header .subtitle {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        .header .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border: 1px solid rgba(77, 120, 204, 0.18);
+        }
+
+        /* 区块 */
+        .section {
+            margin-bottom: 44px;
+        }
+        .section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #e5ebf5;
+            margin-bottom: 8px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+        }
+        .section h3 {
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: #d6deeb;
+            margin: 24px 0 10px;
+        }
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 0.93rem;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.2s;
+        }
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+        .card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e5ebf5;
+            margin-bottom: 6px;
+        }
+        .card .block-sig {
+            display: inline-block;
+            background: var(--code-bg);
+            color: #e5ebf5;
+            padding: 6px 14px;
+            border-radius: var(--radius-xs);
+            font-family: "SF Mono", "Fira Code", "Consolas", "PingFang SC", monospace;
+            font-size: 0.9rem;
+            letter-spacing: 0.2px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            margin-bottom: 10px;
+        }
+        .card .block-sig .param {
+            color: #f0b87d;
+            font-style: italic;
+        }
+        .card .desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .card .note {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: var(--radius-xs);
+            font-size: 0.85rem;
+            color: var(--warning-text);
+            line-height: 1.6;
+        }
+        .card .note::before {
+            content: "💡 ";
+        }
+
+        /* 特色网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+        .feature-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            font-size: 0.88rem;
+            color: var(--text);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .feature-item .fi-icon {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .feature-item strong {
+            color: #e5ebf5;
+        }
+
+        /* 列表 */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        ul li::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: var(--accent-light);
+            font-weight: bold;
+        }
+
+        /* 键盘模式表格 */
+        .mode-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .mode-table th,
+        .mode-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .mode-table th {
+            color: #e5ebf5;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .mode-table td {
+            color: var(--text-secondary);
+        }
+        .mode-table .mode-name {
+            color: #e5ebf5;
+            font-weight: 500;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px 60px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 16px 14px;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- 头部 -->
+        <div class="header">
+            <div class="icon">⌨</div>
+            <h1>虚拟键盘扩展</h1>
+            <p class="subtitle">适用于 Scratch 的非沙盒模式虚拟键盘，支持多模式切换、修饰键、长按连发与模拟控制</p>
+            <div class="badge-row">
+                <span class="badge">非沙盒模式</span>
+                <span class="badge">三种键盘布局</span>
+                <span class="badge">可拖动</span>
+                <span class="badge">自动缩放</span>
+            </div>
+        </div>
+
+        <!-- 扩展介绍 -->
+        <div class="section">
+            <h2>扩展介绍</h2>
+            <p>本扩展为 Scratch 项目提供一个完整的屏幕虚拟键盘，可在触摸屏设备、平板电脑或任何需要屏幕输入的场景下替代物理键盘。键盘以浮动窗口形式覆盖在项目上方，支持拖动、缩放，并完整模拟真实键盘事件。</p>
+
+            <h3>核心特性</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>字母键盘</strong><br>标准 QWERTY 布局，含 Esc、修饰键、空格等
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>数字+方向+功能</strong><br>F1-F12、方向键、小键盘、导航键
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>游戏键盘</strong><br>仅上下左右十字方向键，适合游戏控制
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>可拖动窗口</strong><br>拖拽标题栏任意移动键盘位置
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>自动缩放</strong><br>根据屏幕尺寸自动调整，最小缩放 0.35
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>长按连发</strong><br>按住普通按键 420ms 后自动连续触发
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>锁定键</strong><br>CapsLock、NumLock、ScrollLock 切换状态
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>粘性修饰键</strong><br>Shift/Ctrl/Alt/Meta 单击锁定，再击释放
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>模拟开关</strong><br>可随时启用或停止按键事件发送
+                </div>
+                <div class="feature-item">
+                    <span class="fi-icon"></span>
+                    <strong>按键检测</strong><br>实时查询当前按住的所有按键
+                </div>
+            </div>
+
+            <h3>键盘模式一览</h3>
+            <table class="mode-table">
+                <thead>
+                    <tr><th>模式</th><th>标识值</th><th>包含内容</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mode-name">字母键盘</td>
+                        <td><code>letters</code></td>
+                        <td>Esc、数字行、QWERTY 字母区、方括号、分号、引号、Shift/Ctrl/Alt/Meta、空格</td>
+                    </tr>
+                    <tr>
+                        <td class="mode-name">数字+方向+功能</td>
+                        <td><code>numbers</code></td>
+                        <td>F1-F12、方向键、Insert/Home/PgUp/Del/End/PgDn、小键盘、常用操作键</td>
+                    </tr>
+                    <tr>
+                        <td class="mode-name">游戏键盘</td>
+                        <td><code>game</code></td>
+                        <td>仅 ↑ ↓ ← → 四个方向键，十字布局</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="card" style="margin-top:18px;">
+                <div class="note" style="margin-top:0;">
+                    此扩展需要在非沙盒模式（unsandboxed）下运行。扩展 ID 为 <code>VirtualKeyboardPlus</code>。
+                </div>
+            </div>
+        </div>
+
+        <!-- 积木说明 -->
+        <div class="section">
+            <h2>积木说明</h2>
+            <p>本扩展共提供 <strong>9</strong> 个积木，分为显示控制、模式切换、状态查询和模拟控制四类。</p>
+
+            <!-- 显示控制 -->
+            <h3>显示控制</h3>
+
+            <div class="card">
+                <h4>显示虚拟键盘</h4>
+                <div class="block-sig">显示虚拟键盘</div>
+                <p class="desc">直接显示虚拟键盘。如果键盘已隐藏，则以默认的「字母键盘」模式打开并居中于屏幕；如果已显示则不做改变。</p>
+            </div>
+
+            <div class="card">
+                <h4>隐藏虚拟键盘</h4>
+                <div class="block-sig">隐藏虚拟键盘</div>
+                <p class="desc">关闭虚拟键盘窗口，同时释放所有当前按下的按键（包括粘性修饰键和锁定键状态会被清除）。</p>
+            </div>
+
+            <div class="card">
+                <h4>条件显示/隐藏</h4>
+                <div class="block-sig">[<span class="param">显示</span>] 虚拟键盘</div>
+                <p class="desc">通过下拉菜单选择「显示」或「隐藏」来控制键盘。菜单选项固定，不接受变量输入。</p>
+            </div>
+
+            <!-- 模式切换 -->
+            <h3>模式切换</h3>
+
+            <div class="card">
+                <h4>显示指定类型键盘</h4>
+                <div class="block-sig">显示虚拟键盘 类型 [<span class="param">字母键盘</span>]</div>
+                <p class="desc">显示虚拟键盘并同时切换到指定类型。菜单提供三种选项：字母键盘、数字+方向+功能、游戏键盘(仅方向)。若键盘已显示，则仅切换类型。</p>
+            </div>
+
+            <div class="card">
+                <h4>切换键盘类型</h4>
+                <div class="block-sig">切换虚拟键盘为 [<span class="param">字母键盘</span>]</div>
+                <p class="desc">在键盘已显示的情况下切换布局类型。如果键盘当前未显示，此积木不会自动显示键盘（仅设置内部模式）。</p>
+            </div>
+
+            <!-- 状态查询 -->
+            <h3>状态查询</h3>
+
+            <div class="card">
+                <h4>键盘可见性</h4>
+                <div class="block-sig">虚拟键盘已显示？</div>
+                <p class="desc">返回布尔值（<code>true</code> 或 <code>false</code>），表示虚拟键盘窗口当前是否在屏幕上可见。</p>
+            </div>
+
+            <div class="card">
+                <h4>当前键盘类型</h4>
+                <div class="block-sig">当前虚拟键盘类型</div>
+                <p class="desc">返回一个字符串，表示当前键盘模式。可能的返回值：<code>字母键盘</code>、<code>数字+方向+功能</code>、<code>游戏键盘</code>。</p>
+            </div>
+
+            <!-- 模拟控制 -->
+            <h3>模拟控制（新增）</h3>
+
+            <div class="card">
+                <h4>模拟按键开关</h4>
+                <div class="block-sig">模拟按键 [<span class="param">启用</span>]</div>
+                <p class="desc">控制虚拟键盘点击时是否向 Scratch 项目发送真实的键盘事件。选择「启用」时，每次点击都会触发<strong>当按下某键</strong>等积木；选择「停止」时，按键视觉上仍会高亮，但不会产生实际输入效果。</p>
+                <div class="note">
+                    默认状态为<strong>启用</strong>。此开关在调试、教学演示或需要暂时冻结输入的场合非常实用。关闭模拟后，已按下的按键状态仍可通过「按下了那些按键」积木查询。
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>查询按下按键</h4>
+                <div class="block-sig">按下了那些按键</div>
+                <p class="desc">返回一个字符串，包含当前虚拟键盘上所有处于按住状态的按键名称，多个按键以逗号分隔。如果没有按键被按住，则返回<code>无</code>。</p>
+                <div class="note">
+                    返回值示例：<code>a, shift, 3</code> 或 <code>ArrowUp, ArrowRight</code>。此积木可配合「模拟按键 停止」使用，在不触发事件的情况下检测用户操作。
+                </div>
+            </div>
+        </div>
+
+        <!-- 补充说明 -->
+        <div class="section">
+            <h2>补充说明</h2>
+            <div class="card">
+                <h4>修饰键与锁定键行为</h4>
+                <ul>
+                    <li><strong>粘性修饰键</strong>：Shift、Ctrl、Alt、Meta（含左右版本）在被点击后会保持激活状态（高亮），再次点击则释放。适合需要组合键的场景。</li>
+                    <li><strong>锁定键</strong>：CapsLock、NumLock、ScrollLock 为切换式按键，点击一次锁定、再点击一次解锁，状态会持续保留直到再次切换。</li>
+                    <li><strong>窗口失焦</strong>：当浏览器窗口失去焦点时，所有按键自动释放，防止按键卡住。</li>
+                    <li><strong>长按连发</strong>：普通字符键和功能键支持长按连发（延迟 420ms，间隔 75ms）；修饰键和锁定键不触发连发。</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>窗口操作</h4>
+                <ul>
+                    <li>拖拽标题栏可移动键盘到屏幕任意位置。</li>
+                    <li>键盘自动根据窗口尺寸缩放，最小缩放比例为 0.35。</li>
+                    <li>点击右上角 × 按钮可关闭键盘，等同于调用「隐藏虚拟键盘」积木。</li>
+                    <li>点击标题栏中的模式按钮（字母键盘 / 数字/方向 / 游戏键盘）可快速切换布局。</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>兼容性提示</h4>
+                <ul>
+                    <li>本扩展仅在<strong>非沙盒模式</strong>下可用。若在沙盒环境中加载，会抛出错误。</li>
+                    <li>扩展通过 <code>KeyboardEvent</code> 和 Scratch VM 的 <code>ioDevices.keyboard.postData</code> 双通道发送按键事件，确保 Scratch 积木能正确响应。</li>
+                    <li>在移动端触摸屏上，建议配合游戏键盘模式使用以获得最佳体验。</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
