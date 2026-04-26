@@ -1,38 +1,18 @@
 [
   {
-    "id": "example-ext-1",
-    "name": "高级数学工具",
-    "description": "提供三角函数、矩阵运算等高级数学积木。",
-    "tags": ["math", "utility"],
+    "id": "虚拟键盘",
+    "name": "虚拟键盘",
+    "description": "虚拟键盘",
+    "tags": ["响应按键", "移动面板"],
     "authors": [
       {
-        "name": "YourName",
-        "url": "https://github.com/yourname"
+        "name": "yuan",
+        "url": "https://github.com/13244431027"
       }
     ],
-    "icon": "assets/pictures/ext1.png",
+    "icon": "assets/pictures/虚拟键盘.png",
     "downloadUrl": "https://yourname.github.io/extensions/assets/extensions/example-ext-1.js",
-    "docsUrl": "https://yourname.github.io/extensions/assets/docs/example-ext-1.html",
+    "docsUrl": "https://13244431027.github.io/extensions/assets/docs/1.html",
     "turboWarpUrl": "https://turbowarp.org/editor?extension=https://yourname.github.io/extensions/assets/extensions/example-ext-1.js"
-  },
-  {
-    "id": "example-ext-2",
-    "name": "网络请求工具",
-    "description": "为 TurboWarp 添加 GET、POST 请求等网络功能。",
-    "tags": ["network", "utility"],
-    "authors": [
-      {
-        "name": "DeveloperA",
-        "url": "https://github.com/developer-a"
-      },
-      {
-        "name": "DeveloperB",
-        "url": "https://github.com/developer-b"
-      }
-    ],
-    "icon": "assets/pictures/ext2.png",
-    "downloadUrl": "https://yourname.github.io/extensions/assets/extensions/example-ext-2.js",
-    "docsUrl": "https://yourname.github.io/extensions/assets/docs/example-ext-2.html",
-    "turboWarpUrl": "https://turbowarp.org/editor?extension=https://yourname.github.io/extensions/assets/extensions/example-ext-2.js"
   }
 ]
